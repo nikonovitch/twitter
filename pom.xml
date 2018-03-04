@@ -24,6 +24,9 @@
 		<java.version>1.8</java.version>
 		<groovy.version>2.4.13</groovy.version>
 		<spock.version>1.1-groovy-2.4</spock.version>
+		<cucumber-groovy.version>2.0.1</cucumber-groovy.version>
+		<cucumber-spring.version>2.3.1</cucumber-spring.version>
+		<cucumber-junit.version>2.3.1</cucumber-junit.version>
 	</properties>
 
 	<dependencies>
@@ -58,6 +61,23 @@
 			<groupId>org.spockframework</groupId>
 			<artifactId>spock-spring</artifactId>
 			<version>${spock.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-groovy</artifactId>
+			<version>${cucumber-groovy.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-spring</artifactId>
+			<version>${cucumber-spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-junit</artifactId>
+			<version>${cucumber-junit.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

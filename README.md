@@ -47,6 +47,15 @@ For end to end tests only go with (TODO):
 ```
 mvnw -Dtest=ClassName test
 ```
+## API Reference
+
+GET
+ * GET /users/:username/wall
+ * GET /users/:username/timeline
+ 
+POST
+ * POST /users/:username/tweet
+ * POST /users/:username/follow?username=:to_follow_username
 
 ## Assumptions
 
@@ -58,6 +67,7 @@ TODO
 * Spring boot
 * Groovy
 * Spock
+* Cucumber
 * Lombok
 * TODO: More will come...
 
