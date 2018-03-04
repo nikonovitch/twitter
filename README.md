@@ -56,6 +56,8 @@ TODO
 
 * Java 8
 * Spring boot
+* Groovy
+* Spock
 * Lombok
 * TODO: More will come...
 
