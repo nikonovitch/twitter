@@ -19,16 +19,24 @@ public class TwitterService {
     }
 
     public void tweet(String username, String message) {
+        assertMessageIsValid(message);
+        nest.save(username, message);
+    }
+
+    private void assertMessageIsValid(String message) {
         if (message == null || message.trim().isEmpty()) {
             throw new IllegalArgumentException("Message should contain at least 1 non-whitespace character.");
         }
         if (message.length() > CHARACTERS_LIMIT) {
             throw new IllegalArgumentException("Message exceeds 140 characters limit.");
         }
-        nest.persist(username, message);
     }
 
     public List<Tweet> getWall(String username) {
         return nest.getTweetsFor(username);
+    }
+
+    public void follow(String follower, String followee) {
+        nest.follow(follower, followee);
     }
 }

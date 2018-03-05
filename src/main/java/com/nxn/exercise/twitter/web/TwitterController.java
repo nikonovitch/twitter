@@ -25,6 +25,12 @@ public class TwitterController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
+    @RequestMapping(method = RequestMethod.POST, path = "/users/{username}/follow")
+    public ResponseEntity<?> follow(@PathVariable("username") String follower, @RequestParam("followee_username") String followee){
+        service.follow(follower, followee);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
     @RequestMapping(method = RequestMethod.GET, path = "/users/{username}/wall")
     public List<Tweet> getWall(@PathVariable String username){
         return service.getWall(username);

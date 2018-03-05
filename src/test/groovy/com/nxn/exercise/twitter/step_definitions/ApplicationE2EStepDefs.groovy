@@ -27,7 +27,7 @@ import static org.springframework.http.HttpMethod.POST
 @ContextConfiguration
 class ApplicationE2EStepDefs {
 
-    public static final String FOLLOW_URL = "/users/{username}/follow?username={followee_username}"
+    public static final String FOLLOW_URL = "/users/{username}/follow?followee_username={followee_username}"
     public static final String WALL_URL = "/users/{username}/wall"
     public static final String POST_URL = "/users/{username}/tweet"
     public static final String TIMELINE_URL = "/users/{username}/timeline"

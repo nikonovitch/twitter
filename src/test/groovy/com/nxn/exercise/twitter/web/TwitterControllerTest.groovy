@@ -10,8 +10,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import spock.lang.Specification
 
-import static com.nxn.exercise.twitter.step_definitions.ApplicationE2EStepDefs.POST_URL
-import static com.nxn.exercise.twitter.step_definitions.ApplicationE2EStepDefs.WALL_URL
+import static com.nxn.exercise.twitter.step_definitions.ApplicationE2EStepDefs.*
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -72,8 +71,8 @@ class TwitterControllerTest extends Specification {
         response.contentAsString == '{"error":"Message should contain at least 1 non-whitespace character."}'
     }
 
-    def tweet(String message) {
-        mvc.perform(post(POST_URL, "Donald")
+    def tweet(String message, String username = "Donald") {
+        mvc.perform(post(POST_URL, username)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""{"message":"${message}"}"""))
     }
@@ -93,6 +92,35 @@ class TwitterControllerTest extends Specification {
         JSONAssert.assertEquals(expectedWall, response.contentAsString, JSONCompareMode.LENIENT)
     }
 
+    def "Should return OK when existing user follows another existing user"(){
+        given:
+        def follower = "Donald"
+        def followee = "Hilary"
+        and: "both follower and followee has already tweeted in the past"
+        tweet("Hillary, get on with your life and give it another try in three years!", follower)
+        tweet("This is horrific. We cannot allow this man to become president.", followee)
+
+        when:
+        def response = mvc.perform(post(FOLLOW_URL, follower, followee)
+                .contentType(MediaType.APPLICATION_JSON)).andReturn().response
+
+        then:
+        response.status == 200
+    }
+
+    def "Should return error when following non-existing user"(){
+        given:
+        def follower = "Donald"
+        def followee = "Kim"
+        and: "followee has never tweeted in the past"
+
+        when:
+        def response = mvc.perform(post(FOLLOW_URL, follower, followee)
+                .contentType(MediaType.APPLICATION_JSON)).andReturn().response
+
+        then:
+        response.status == 404
+    }
 
     def expectedWall = """\
       [

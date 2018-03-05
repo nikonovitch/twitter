@@ -12,7 +12,7 @@ class TweetNestSpec extends Specification {
         def message = "IF YOU DON’T HAVE STEEL, YOU DON’T HAVE A COUNTRY!"
 
         when:
-        nest.persist(username, message)
+        nest.save(username, message)
 
         then:
         def persistedTweets = nest.getTweetsFor(username)

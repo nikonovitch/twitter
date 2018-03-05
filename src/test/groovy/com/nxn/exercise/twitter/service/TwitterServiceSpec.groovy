@@ -19,7 +19,7 @@ class TwitterServiceSpec extends Specification {
         service.tweet(username, message)
 
         then:
-        1 * nest.persist(username, message)
+        1 * nest.save(username, message)
     }
 
     def "Should throw an exception for an empty tweet"(){
@@ -51,6 +51,18 @@ class TwitterServiceSpec extends Specification {
         1 * nest.getTweetsFor(username) >> tweets.reverse()
         and: "the tweets are in a reversed chronological order"
         wall == tweets.reverse()
+    }
+
+    def "Should follow the followee"(){
+        given:
+        def follower = "Donald"
+        def followee = "Hilary"
+
+        when:
+        service.follow(follower, followee)
+
+        then:
+        1 * nest.follow(follower, followee)
     }
 
     def superLongTweet = """\
