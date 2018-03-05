@@ -5,8 +5,8 @@ Feature: Following
 
   Scenario: Donald follows Hillary
     Given "Donald" has tweeted in the past
-    And "Hilary" has tweeted in the past
-    When "Donald" follows "Hilary"
+    And "Hillary" has tweeted in the past
+    When "Donald" follows "Hillary"
     Then the response has a status code of 200
 
   Scenario: Donald follows KimJong

@@ -2,9 +2,11 @@ Feature: Timeline
   A user should be able to see a list of the messages posted by all the people they follow, in reverse chronological order.
 
   Scenario: Donald requests his timeline
-    Given "Hilary" has tweeted "Delete your account." in the past
+    Given "Donald" has tweeted "Crooked Hillary is the worst (and biggest) loser of all time." in the past
+    And "Hillary" has tweeted "Delete your account." in the past
     And "Angela" has tweeted "Sehenswürdigkeiten" in the past
-    And "Donald" follows "Hilary"
+
+    And "Donald" follows "Hillary"
     And "Donald" follows "Angela"
 
     When "Donald" requests the contents of his timeline
@@ -19,7 +21,7 @@ Feature: Timeline
         },
         {
           "message": "Delete your account.",
-          "author": "Hilary"
+          "author": "Hillary"
         }
       ]
       """

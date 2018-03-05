@@ -3,6 +3,9 @@ package com.nxn.exercise.twitter.service
 import com.nxn.exercise.twitter.domain.Tweet
 import spock.lang.Specification
 
+import java.time.ZoneId
+import java.time.ZonedDateTime
+
 import static java.time.ZonedDateTime.now
 
 class TwitterServiceSpec extends Specification {
@@ -56,13 +59,29 @@ class TwitterServiceSpec extends Specification {
     def "Should follow the followee"(){
         given:
         def follower = "Donald"
-        def followee = "Hilary"
+        def followee = "Hillary"
 
         when:
         service.follow(follower, followee)
 
         then:
         1 * nest.follow(follower, followee)
+    }
+
+    def "Should return timeline in reverse chronological order"(){
+        given: "both Hillary and Angela have already tweeted in the past"
+        def hillarysWall = hillarysTweets()
+        def angelasWall = angelasTweets()
+        1 * nest.getTweetsFor("Hillary") >> hillarysWall
+        1 * nest.getTweetsFor("Angela") >> angelasWall
+        and: "Donald has followed both of them"
+        1 * nest.getFolloweesFor("Donald") >> (["Hillary", "Angela"] as Set)
+
+        when:
+        def donaldsTimeline = service.getTimeline("Donald")
+
+        then:
+        donaldsTimeline == angelasWall.reverse() + hillarysWall.reverse()
     }
 
     def superLongTweet = """\
@@ -74,5 +93,15 @@ class TwitterServiceSpec extends Specification {
         [new Tweet("Donald", "message1", now()),
          new Tweet("Donald", "message2", now()),
          new Tweet("Donald", "message3", now())]
+    }
+
+    def hillarysTweets(){
+        [new Tweet("Hillary", "H1", ZonedDateTime.of(2015,01,10,9,4,13,12, ZoneId.of("Europe/Belgrade"))),
+         new Tweet("Hillary", "H2", ZonedDateTime.of(2016,01,10,9,4,13,12, ZoneId.of("Europe/Belgrade")))]
+    }
+
+    def angelasTweets(){
+        [new Tweet("Angela", "A1", ZonedDateTime.of(2017,01,10,9,4,13,12, ZoneId.of("Europe/Belgrade"))),
+         new Tweet("Angela", "A2", ZonedDateTime.of(2018,01,10,9,4,13,12, ZoneId.of("Europe/Belgrade")))]
     }
 }

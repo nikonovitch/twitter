@@ -11,7 +11,7 @@ public class TweetNest {
 
     private Map<String, LinkedList<Tweet>> usersToTweets = new HashMap<>();
 
-    private Map<String, List<String>> followersToFollowees = new HashMap<>();
+    private Map<String, Set<String>> followersToFollowees = new HashMap<>();
 
     public synchronized void save(String username, String message) {
         saveTweet(username, message);
@@ -28,7 +28,7 @@ public class TweetNest {
     }
 
     private void saveUserIfNecessary(String username) {
-        followersToFollowees.computeIfAbsent(username, k -> new ArrayList<>());
+        followersToFollowees.computeIfAbsent(username, k -> new HashSet<>());
     }
 
     public synchronized List<Tweet> getTweetsFor(String username) {
@@ -42,23 +42,24 @@ public class TweetNest {
         throw new NoSuchUserException("User \"" + username + "\" does not exist.");
     }
 
-    public synchronized void clear(){
-        usersToTweets.clear();
-    }
-
     public synchronized void follow(String follower, String followee) {
-        assertUsersExist(follower, followee);
+        assertUserExist(follower);
+        assertUserExist(followee);
         followersToFollowees.get(follower).add(followee);
     }
 
-    private void assertUsersExist(String follower, String followee) {
-        if (!followersToFollowees.containsKey(follower)){
-            throwNoSuchUserException(follower);
-
+    private void assertUserExist(String username) {
+        if (!followersToFollowees.containsKey(username)){
+            throwNoSuchUserException(username);
         }
-        if (!followersToFollowees.containsKey(followee)){
-            throwNoSuchUserException(followee);
+    }
 
-        }
+    public Set<String> getFolloweesFor(String follower) {
+        assertUserExist(follower);
+        return followersToFollowees.get(follower);
+    }
+
+    public synchronized void clear(){
+        usersToTweets.clear();
     }
 }

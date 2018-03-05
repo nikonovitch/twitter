@@ -35,4 +35,9 @@ public class TwitterController {
     public List<Tweet> getWall(@PathVariable String username){
         return service.getWall(username);
     }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/users/{username}/timeline")
+    public List<Tweet> getTimeline(@PathVariable String username){
+        return service.getTimeline(username);
+    }
 }

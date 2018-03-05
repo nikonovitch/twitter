@@ -71,12 +71,6 @@ class TwitterControllerTest extends Specification {
         response.contentAsString == '{"error":"Message should contain at least 1 non-whitespace character."}'
     }
 
-    def tweet(String message, String username = "Donald") {
-        mvc.perform(post(POST_URL, username)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("""{"message":"${message}"}"""))
-    }
-
     def "Should return collection of all previously posted tweets upon request"() {
         given: "Donald has already posted some tweets"
         tweet("I have never seen a thin person drinking  Diet Coke.")
@@ -95,14 +89,13 @@ class TwitterControllerTest extends Specification {
     def "Should return OK when existing user follows another existing user"(){
         given:
         def follower = "Donald"
-        def followee = "Hilary"
+        def followee = "Hillary"
         and: "both follower and followee has already tweeted in the past"
         tweet("Hillary, get on with your life and give it another try in three years!", follower)
         tweet("This is horrific. We cannot allow this man to become president.", followee)
 
         when:
-        def response = mvc.perform(post(FOLLOW_URL, follower, followee)
-                .contentType(MediaType.APPLICATION_JSON)).andReturn().response
+        def response = follow(follower, followee).andReturn().response
 
         then:
         response.status == 200
@@ -122,6 +115,35 @@ class TwitterControllerTest extends Specification {
         response.status == 404
     }
 
+    def "Should return tweets of the followed users in the reverse chronological order"(){
+        given: "every user has tweeted in the past"
+        tweet("Hillary, get on with your life and give it another try in three years!", "Donald")
+        tweet("This is horrific. We cannot allow this man to become president.", "Hillary")
+        tweet("Together we can face challenges from aggressive Russia+ 'confused'USA president", "Angela")
+
+        and: "Donald follows Angela and Hillary"
+        follow("Donald", "Angela")
+        follow("Donald", "Hillary")
+
+        when:
+        def response = mvc.perform(get(TIMELINE_URL, "Donald")).andReturn().response
+
+        then:
+        response.status == 200
+        and:
+        JSONAssert.assertEquals(expectedTimeline, response.contentAsString, JSONCompareMode.LENIENT)
+    }
+
+    def follow(String follower, String followee) {
+        mvc.perform(post(FOLLOW_URL, follower, followee).contentType(MediaType.APPLICATION_JSON))
+    }
+
+    def tweet(String message, String username = "Donald") {
+        mvc.perform(post(POST_URL, username)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""{"message":"${message}"}"""))
+    }
+
     def expectedWall = """\
       [
         {
@@ -135,6 +157,19 @@ class TwitterControllerTest extends Specification {
         {
           "message": "I have never seen a thin person drinking  Diet Coke.",
           "author": "Donald"
+        }
+      ]
+      """
+
+    def expectedTimeline = """\
+      [
+        {
+          "message": "Together we can face challenges from aggressive Russia+ 'confused'USA president",
+          "author": "Angela"
+        },
+        {
+          "message": "This is horrific. We cannot allow this man to become president.",
+          "author": "Hillary"
         }
       ]
       """
