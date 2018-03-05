@@ -26,11 +26,14 @@ class TwitterControllerTest extends Specification {
     @Autowired
     TweetNest nest
 
-    def setup(){
+    def setup() {
         nest.clear()
     }
 
     def "Should return OK when tweeting a valid message"() {
+        given:
+        def validTweetMessage = "Despite the constant negative press covfefe"
+
         when:
         def result = tweet(validTweetMessage)
 
@@ -39,6 +42,14 @@ class TwitterControllerTest extends Specification {
     }
 
     def "Should return error when the message is too long"() {
+        given:
+        def tooLongTweet =
+            """\
+              The United States has an \$800 Billion Dollar Yearly Trade Deficit \
+              because of our “very stupid” trade deals and policies. \
+              Our jobs and wealth are being given to other countries that have taken advantage of us for years. \
+              They laugh at what fools our leaders have been. No more!\
+            """
         when:
         def response = tweet(tooLongTweet).andReturn().response
 
@@ -49,6 +60,9 @@ class TwitterControllerTest extends Specification {
     }
 
     def "Should return error when the message has no characters"() {
+        given:
+        def emptyTweet = "       "
+
         when:
         def response = tweet(emptyTweet).andReturn().response
 
@@ -64,7 +78,7 @@ class TwitterControllerTest extends Specification {
                 .content("""{"message":"${message}"}"""))
     }
 
-    def "Should return collection of all previously posted tweets upon request"(){
+    def "Should return collection of all previously posted tweets upon request"() {
         given: "Donald has already posted some tweets"
         tweet("I have never seen a thin person drinking  Diet Coke.")
         tweet("Today I have finally seen a thin person drinking Diet Coke.")
@@ -79,17 +93,6 @@ class TwitterControllerTest extends Specification {
         JSONAssert.assertEquals(expectedWall, response.contentAsString, JSONCompareMode.LENIENT)
     }
 
-    def validTweetMessage = "Despite the constant negative press covfefe"
-
-    def tooLongTweet =
-            """\
-              The United States has an \$800 Billion Dollar Yearly Trade Deficit \
-              because of our “very stupid” trade deals and policies. \
-              Our jobs and wealth are being given to other countries that have taken advantage of us for years. \
-              They laugh at what fools our leaders have been. No more!\
-            """
-
-    def emptyTweet = "       "
 
     def expectedWall = """\
       [
