@@ -19,7 +19,7 @@ public class TwitterController {
 
     @RequestMapping(method = RequestMethod.POST, path = "/users/{username}/tweet")
     public ResponseEntity<?> tweet(@PathVariable String username, @RequestBody Message message){
-        service.tweet(username, message);
+        service.tweet(username, message.getContent());
         return ResponseEntity.ok(HttpStatus.OK);
     }
 }
