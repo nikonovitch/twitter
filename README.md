@@ -26,16 +26,22 @@ For Windows:
 mvnw.cmd spring-boot:run
 ```
 
-At this point you should be able to query the API with the URL `TODO`.
+At this point you should be able to query the API. 
 
-For example, the query: `TODO` should return a response:
+For example, the query to `localhost:8080/users/donald/tweet` with `Content-Type` header set to `application-json` and body:
+```json
+{
+  "message": "Despite the constant negative press covfefe"
+}
 ```
-TODO
+should get you 200 response code:
+```
+OK
 ```
 
 ## Running the tests
 
-The code includes unit (TODO), integration (TODO), smoke and end to end (TODO) tests.
+The code includes unit, integration, smoke and end to end tests.
 
 In order to execute all of them run:
 
@@ -43,23 +49,21 @@ In order to execute all of them run:
 mvnw test
 ```
 
-For end to end tests only go with (TODO):
+For end to end tests only go with:
 ```
-mvnw -Dtest=ClassName test
+mvnw -Dtest=ApplicationE2ETest test
 ```
 ## API Reference
+Method      | Http request                                                   | Description
+----------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------
+tweet       | POST /users/***user***/tweet                                   | Saves the tweet from the body (value of the *message* key) and registers ***user*** if necessary. 
+follow      | POST /users/***user***/follow?followee_username=***followee*** | Starts following ***followee***. Both ***user*** and ***followee*** have to be already registered prior to *follow*
+getWall     | GET /users/***user***/wall                                     | Returns the list of the tweets posted by the ***user*** in reverse chronological order. 
+getTimeline | GET /users/***user***/timeline                                 | Returns the list of the tweets posted by users followed by the ***user*** in reverse chronological order.
 
-GET
- * GET /users/:username/wall
- * GET /users/:username/timeline
- 
-POST
- * POST /users/:username/tweet
- * POST /users/:username/follow?username=:followee_username
+## Assumptions/Documentation
 
-## Assumptions
-
-TODO     
+System handles several edge cases. All of them are well documented under `src\test\resources\cucumber` folder. Please refer to that documentation for more details.    
 
 ## Technology stack
 
@@ -70,9 +74,9 @@ TODO
 * Cucumber
 * JSONAssert
 * Lombok
-* TODO: More will come...
 
 
 ## Author
-Nikodem Karbowy. Say hello @
-nikodem.karbowy@wgoracejwodzie.company
+Nikodem Karbowy 🤙 
+
+Say hello @ nikodem.karbowy///a/t///wgoracejwodzie.company 
