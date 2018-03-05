@@ -15,11 +15,11 @@ Feature: Timeline
       [
         {
           "message": "Sehenswürdigkeiten",
-          "username": "Angela"
+          "author": "Angela"
         },
         {
           "message": "Delete your account.",
-          "username": "Hilary"
+          "author": "Hilary"
         }
       ]
       """

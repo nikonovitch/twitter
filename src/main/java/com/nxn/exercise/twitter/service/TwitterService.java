@@ -1,7 +1,10 @@
 package com.nxn.exercise.twitter.service;
 
+import com.nxn.exercise.twitter.domain.Tweet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TwitterService {
@@ -23,5 +26,9 @@ public class TwitterService {
             throw new IllegalArgumentException("Message exceeds 140 characters limit.");
         }
         nest.persist(username, message);
+    }
+
+    public List<Tweet> getWall(String username) {
+        return nest.getTweetsFor(username);
     }
 }

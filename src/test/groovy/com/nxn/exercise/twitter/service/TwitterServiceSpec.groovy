@@ -1,6 +1,9 @@
 package com.nxn.exercise.twitter.service
 
+import com.nxn.exercise.twitter.domain.Tweet
 import spock.lang.Specification
+
+import static java.time.ZonedDateTime.now
 
 class TwitterServiceSpec extends Specification {
 
@@ -37,8 +40,27 @@ class TwitterServiceSpec extends Specification {
         e.message == "Message exceeds 140 characters limit."
     }
 
+    def "Should return an existing tweet collection upon request"(){
+        given:
+        def username = "Donald"
+        def tweets = donaldsTweets()
+        when:
+        def wall = service.getWall(username)
+
+        then:
+        1 * nest.getTweetsFor(username) >> tweets.reverse()
+        and: "the tweets are in a reversed chronological order"
+        wall == tweets.reverse()
+    }
+
     def superLongTweet = """\
             If the E.U. wants to further increase their already massive tariffs and barriers on U.S. companies \
             doing business there, we will simply apply a Tax on their Cars which freely pour into the U.S. \
             They make it impossible for our cars (and more) to sell there. Big trade imbalance!"""
+
+    def donaldsTweets(){
+        [new Tweet("Donald", "message1", now()),
+         new Tweet("Donald", "message2", now()),
+         new Tweet("Donald", "message3", now())]
+    }
 }

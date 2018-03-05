@@ -3,9 +3,9 @@ Feature: Wall
 
   Scenario: Donald requests his wall
     Given "Donald" has already posted some tweets:
-      | "I have never seen a thin person drinking  Diet Coke."        |
-      | "Today I have finally seen a thin person drinking Diet Coke." |
-      | "It was me. "                                                 |
+      | I have never seen a thin person drinking  Diet Coke.        |
+      | Today I have finally seen a thin person drinking Diet Coke. |
+      | It was me.                                                  |
 
     When "Donald" requests the contents of his wall
 
@@ -14,16 +14,16 @@ Feature: Wall
       """
       [
         {
-          "message": "It was me. ",
-          "username": "Donald"
+          "message": "It was me.",
+          "author": "Donald"
         },
         {
           "message": "Today I have finally seen a thin person drinking Diet Coke.",
-          "username": "Donald"
+          "author": "Donald"
         },
         {
           "message": "I have never seen a thin person drinking  Diet Coke.",
-          "username": "Donald"
+          "author": "Donald"
         }
       ]
       """

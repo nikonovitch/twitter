@@ -1,7 +1,9 @@
 package com.nxn.exercise.twitter.step_definitions
 
 import com.nxn.exercise.twitter.TwitterApplication
+import com.nxn.exercise.twitter.service.TweetNest
 import cucumber.api.DataTable
+import cucumber.api.java.Before
 import cucumber.api.java.en.And
 import cucumber.api.java.en.Given
 import cucumber.api.java.en.Then
@@ -34,7 +36,15 @@ class ApplicationE2EStepDefs {
     @Autowired
     protected TestRestTemplate template
 
+    @Autowired
+    private TweetNest nest
+
     private ResponseEntity<String> response
+
+    @Before
+    def clearTheMemory(){
+        nest.clear()
+    }
 
     @Given("^\"([^\"]*)\" has already posted some tweets:\$")
     def hasAlreadyPostedSomeTweets(String username, DataTable table) throws Throwable {
