@@ -9,11 +9,23 @@ Feature: Posting
 
   Scenario: Donald tweets too long message
     When "Donald" posts a tweet that exceeds the characters limit
-    Then the response has a status code of 403
+    Then the response has a status code of 400
+    And it should contain the following:
+      """
+      {
+	     "error" : "Message exceeds 140 characters limit."
+      }
+      """
 
   Scenario Outline: Donald tweets a message with no characters
     When <user> posts a <tweet> with no characters
-    Then the response has a status code of 403
+    Then the response has a status code of 400
+    And it should contain the following:
+      """
+      {
+	     "error" : "Message should contain at least 1 non-whitespace character."
+      }
+      """
 
     Examples:
       | user     | tweet           |

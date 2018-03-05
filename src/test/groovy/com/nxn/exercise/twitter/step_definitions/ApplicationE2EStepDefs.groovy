@@ -25,11 +25,11 @@ import static org.springframework.http.HttpMethod.POST
 @ContextConfiguration
 class ApplicationE2EStepDefs {
 
+    public static final String FOLLOW_URL = "/users/{username}/follow?username={followee_username}"
+    public static final String WALL_URL = "/users/{username}/wall"
+    public static final String POST_URL = "/users/{username}/tweet"
+    public static final String TIMELINE_URL = "/users/{username}/timeline"
     private static final int TWEET_CHARACTERS_LIMIT = 140
-    private static final String FOLLOW_URL = "/users/{username}/follow?username={followee_username}"
-    private static final String WALL_URL = "/users/{username}/wall"
-    private static final String TWEET_URL = "/users/{username}/tweet"
-    private static final String TIMELINE_URL = "/users/{username}/timeline"
 
     @Autowired
     protected TestRestTemplate template
@@ -93,13 +93,13 @@ class ApplicationE2EStepDefs {
         assertThat(response.getStatusCode().value(), is(expectedStatusCode))
     }
 
-    @And("^it contains the tweets in the reversed chronological order:\$")
+    @And("^it should contain the following:\$")
     def itContainsTheTweetsInTheReversedChronologicalOrder(String expectedResponse) throws Throwable {
         JSONAssert.assertEquals(expectedResponse, response.getBody(), JSONCompareMode.LENIENT)
     }
 
     def postTweet(String username, String tweet) {
-        template.exchange(TWEET_URL, POST, constructTweetRequest(tweet), String, username)
+        template.exchange(POST_URL, POST, constructTweetRequest(tweet), String, username)
     }
 
     static def constructTweetRequest(String tweet) {
