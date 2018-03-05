@@ -5,7 +5,7 @@
 
 	<groupId>com.nxn.exercise</groupId>
 	<artifactId>twitter</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
 	<name>twitter</name>
