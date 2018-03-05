@@ -7,7 +7,7 @@ Feature: Following
     When "Donald" follows "Hilary"
     Then the response has a status code of 200
 
-  Scenario: Donald follows Angela
-    Given Angela has never tweeted before
-    When "Donald" follows "Angela"
+  Scenario: Donald follows KimJong
+    Given KimJong has never tweeted before
+    When "Donald" follows "KimJong"
     Then the response has a status code of 404

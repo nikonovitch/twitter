@@ -8,6 +8,7 @@ Feature: Wall
       | "It was me. "                                                 |
 
     When "Donald" requests the contents of his wall
+
     Then the response has a status code of 200
     And it contains the tweets in the reversed chronological order:
       """

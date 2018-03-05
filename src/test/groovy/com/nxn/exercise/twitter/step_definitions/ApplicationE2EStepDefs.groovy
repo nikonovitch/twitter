@@ -29,11 +29,32 @@ class ApplicationE2EStepDefs {
     private static final String FOLLOW_URL = "/users/{username}/follow?username={followee_username}"
     private static final String WALL_URL = "/users/{username}/wall"
     private static final String TWEET_URL = "/users/{username}/tweet"
+    private static final String TIMELINE_URL = "/users/{username}/timeline"
 
     @Autowired
     protected TestRestTemplate template
 
     private ResponseEntity<String> response
+
+    @Given("^\"([^\"]*)\" has already posted some tweets:\$")
+    def hasAlreadyPostedSomeTweets(String username, DataTable table) throws Throwable {
+        table.asList(String).each { tweet -> postTweet(username, tweet)}
+    }
+
+    @Given("^\"([^\"]*)\" has tweeted in the past\$")
+    def hasTweetedInThePast(String username) throws Throwable {
+        hasTweetedInThePast(username, "irrelevant tweet")
+    }
+
+    @Given("^\"([^\"]*)\" has tweeted \"([^\"]*)\" in the past\$")
+    def hasTweetedInThePast(String username, String tweet) throws Throwable {
+        postTweet(username, tweet)
+    }
+
+    @Given("^KimJong has never tweeted before\$")
+    def kimJongHasNeverTweetedBefore() throws Throwable {
+        // maybe one day, Kim...
+    }
 
     @When("^\"([^\"]*)\" posts a tweet within the characters limit, ie\\. \"([^\"]*)\"\$")
     def postsATweetWithinTheCharactersLimitIe(String username, String tweet) throws Throwable {
@@ -51,14 +72,10 @@ class ApplicationE2EStepDefs {
         response = postTweet(username, tweet)
     }
 
-    @Then("^the response has a status code of (\\d+)\$")
-    def theResponseHasAStatusCodeOf(int expectedStatusCode) throws Throwable {
-        assertThat(response.getStatusCode().value(), is(expectedStatusCode))
-    }
-
-    @Given("^\"([^\"]*)\" has already posted some tweets:\$")
-    def hasAlreadyPostedSomeTweets(String username, DataTable table) throws Throwable {
-        table.asList(String).each { tweet -> postTweet(username, tweet)}
+    @When("^\"([^\"]*)\" follows \"([^\"]*)\"\$")
+    def follows(String follower, String followee) throws Throwable {
+        def httpEntity = new HttpEntity<Object>(new HttpHeaders())
+        response = template.exchange(FOLLOW_URL, POST, httpEntity, String, follower, followee)
     }
 
     @When("^\"([^\"]*)\" requests the contents of his wall\$")
@@ -66,25 +83,19 @@ class ApplicationE2EStepDefs {
         response = template.getForEntity(WALL_URL, String, username)
     }
 
+    @When("^\"([^\"]*)\" requests the contents of his timeline\$")
+    def requestsTheContentsOfHisTimeline(String username) throws Throwable {
+        response = template.getForEntity(TIMELINE_URL, String, username)
+    }
+
+    @Then("^the response has a status code of (\\d+)\$")
+    def theResponseHasAStatusCodeOf(int expectedStatusCode) throws Throwable {
+        assertThat(response.getStatusCode().value(), is(expectedStatusCode))
+    }
+
     @And("^it contains the tweets in the reversed chronological order:\$")
     def itContainsTheTweetsInTheReversedChronologicalOrder(String expectedResponse) throws Throwable {
         JSONAssert.assertEquals(expectedResponse, response.getBody(), JSONCompareMode.LENIENT)
-    }
-
-    @Given("^\"([^\"]*)\" has tweeted in the past\$")
-    def hasTweetedInThePast(String username) throws Throwable {
-        postTweet(username, "a tweet from the past")
-    }
-
-    @When("^\"([^\"]*)\" follows \"([^\"]*)\"\$")
-    def follows(String follower, String followee) throws Throwable {
-        def httpEntity = new HttpEntity<Object>(new HttpHeaders())
-        response = template.exchange(FOLLOW_URL, POST, httpEntity, String, follower, followee)
-    }
-
-    @Given("^Angela has never tweeted before\$")
-    def angelaHasNeverTweetedBefore() throws Throwable {
-        // maybe one day, Angela...
     }
 
     def postTweet(String username, String tweet) {
