@@ -27,6 +27,7 @@
 		<cucumber-groovy.version>2.0.1</cucumber-groovy.version>
 		<cucumber-spring.version>2.3.1</cucumber-spring.version>
 		<cucumber-junit.version>2.3.1</cucumber-junit.version>
+		<jsonassert.version>1.5.0</jsonassert.version>
 	</properties>
 
 	<dependencies>
@@ -77,6 +78,12 @@
 			<groupId>io.cucumber</groupId>
 			<artifactId>cucumber-junit</artifactId>
 			<version>${cucumber-junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.skyscreamer</groupId>
+			<artifactId>jsonassert</artifactId>
+			<version>${jsonassert.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

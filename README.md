@@ -68,6 +68,7 @@ TODO
 * Groovy
 * Spock
 * Cucumber
+* JSONAssert
 * Lombok
 * TODO: More will come...
 

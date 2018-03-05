@@ -1,8 +1,13 @@
 package com.nxn.exercise.twitter.step_definitions
 
 import com.nxn.exercise.twitter.TwitterApplication
+import cucumber.api.DataTable
+import cucumber.api.java.en.And
+import cucumber.api.java.en.Given
 import cucumber.api.java.en.Then
 import cucumber.api.java.en.When
+import org.skyscreamer.jsonassert.JSONAssert
+import org.skyscreamer.jsonassert.JSONCompareMode
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
@@ -46,6 +51,21 @@ class ApplicationE2EStepDefs {
     @Then("^the response has a status code of (\\d+)\$")
     def theResponseHasAStatusCodeOf(int expectedStatusCode) throws Throwable {
         assertThat(response.getStatusCode().value(), is(expectedStatusCode))
+    }
+
+    @Given("^\"([^\"]*)\" has already posted some tweets:\$")
+    def hasAlreadyPostedSomeTweets(String username, DataTable table) throws Throwable {
+        table.asList(String).each { tweet -> postTweet(username, tweet)}
+    }
+
+    @When("^\"([^\"]*)\" requests the contents of his wall\$")
+    def requestsTheContentsOfHisWall(String username) throws Throwable {
+        response = template.getForEntity("/users/" + username + "/wall", String)
+    }
+
+    @And("^it contains the tweets in the reversed chronological order:\$")
+    def itContainsTheTweetsInTheReversedChronologicalOrder(String expectedResponse) throws Throwable {
+        JSONAssert.assertEquals(expectedResponse, response.getBody(), JSONCompareMode.LENIENT)
     }
 
     def postTweet(String username, String tweet) {
