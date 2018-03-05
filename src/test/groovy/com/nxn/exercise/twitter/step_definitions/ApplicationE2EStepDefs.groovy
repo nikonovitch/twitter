@@ -25,7 +25,10 @@ import static org.springframework.http.HttpMethod.POST
 @ContextConfiguration
 class ApplicationE2EStepDefs {
 
-    public static final int TWEET_CHARACTERS_LIMIT = 140
+    private static final int TWEET_CHARACTERS_LIMIT = 140
+    private static final String FOLLOW_URL = "/users/{username}/follow?username={followee_username}"
+    private static final String WALL_URL = "/users/{username}/wall"
+    private static final String TWEET_URL = "/users/{username}/tweet"
 
     @Autowired
     protected TestRestTemplate template
@@ -60,7 +63,7 @@ class ApplicationE2EStepDefs {
 
     @When("^\"([^\"]*)\" requests the contents of his wall\$")
     def requestsTheContentsOfHisWall(String username) throws Throwable {
-        response = template.getForEntity("/users/" + username + "/wall", String)
+        response = template.getForEntity(WALL_URL, String, username)
     }
 
     @And("^it contains the tweets in the reversed chronological order:\$")
@@ -68,8 +71,24 @@ class ApplicationE2EStepDefs {
         JSONAssert.assertEquals(expectedResponse, response.getBody(), JSONCompareMode.LENIENT)
     }
 
+    @Given("^\"([^\"]*)\" has tweeted in the past\$")
+    def hasTweetedInThePast(String username) throws Throwable {
+        postTweet(username, "a tweet from the past")
+    }
+
+    @When("^\"([^\"]*)\" follows \"([^\"]*)\"\$")
+    def follows(String follower, String followee) throws Throwable {
+        def httpEntity = new HttpEntity<Object>(new HttpHeaders())
+        response = template.exchange(FOLLOW_URL, POST, httpEntity, String, follower, followee)
+    }
+
+    @Given("^Angela has never tweeted before\$")
+    def angelaHasNeverTweetedBefore() throws Throwable {
+        // maybe one day, Angela...
+    }
+
     def postTweet(String username, String tweet) {
-        template.exchange("/users/" + username + "/tweet", POST, constructTweetRequest(tweet), String)
+        template.exchange(TWEET_URL, POST, constructTweetRequest(tweet), String, username)
     }
 
     static def constructTweetRequest(String tweet) {

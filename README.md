@@ -55,7 +55,7 @@ GET
  
 POST
  * POST /users/:username/tweet
- * POST /users/:username/follow?username=:to_follow_username
+ * POST /users/:username/follow?username=:followee_username
 
 ## Assumptions
 
